@@ -1,4 +1,5 @@
 const fs = require("fs")
+const { get } = require("http")
 const {join} = require ("path")
 
 
@@ -24,6 +25,37 @@ const useRoute = (app) => {
             const users = getUsers()
 
             res.send({ users })
+        })
+        .post((req, res)=> {
+            const users = getUsers()
+
+            users.push(req.body)
+            saveUser(users)
+
+            res.status(201).send('OK!')
+        })
+        .put((req, res)=>{
+            const users = getUsers()
+
+            saveUser(users.map(use => {
+                if (users.id == req.params.id){
+                    return{
+                        ...users,
+                        ...req.body
+
+                    }
+                }
+
+                return user
+            }))
+            res.status(200).send('Tudo certo com a requisição')
+        })
+        .delete((req,res)=>{
+            const users = getUsers()
+
+            saveUser(users.filter(user => user.id !== req.params.id))
+
+            res.status(200).send('ok.')
         })
 }
 
